@@ -1,0 +1,15 @@
+healpix-geo-java
+Copyright 2026 GRID4EARTH contributors
+
+This product is a Java port of parts of the following software:
+
+- healpix-geo (https://github.com/GRID4EARTH/healpix-geo), Apache License 2.0.
+  Functions ported: nested lonlat_to_healpix and healpix_to_lonlat.
+
+- cdshealpix (https://github.com/cds-astro/cds-healpix-rust), Copyright CDS,
+  Universite de Strasbourg, CNRS; Apache License 2.0 or MIT.
+  Ported: nested::Layer::hash, nested::Layer::center and unproj.
+
+- geodesy (https://github.com/busstoptaktik/geodesy), Apache License 2.0 or MIT.
+  Ported: the geodetic/authalic latitude series and its coefficients
+  (Karney, C. F. F. (2022), "On auxiliary latitudes", eq. A19 and A20).

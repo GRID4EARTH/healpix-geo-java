@@ -1,0 +1,28 @@
+name: Agreement with the latest healpix-geo
+
+# Regenerates the reference with the latest healpix-geo release and runs the tests against it,
+# so a change of behaviour upstream fails here within a week.
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  upstream:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - run: pip install healpix-geo numpy
+      - run: python reference/make_reference.py "$RUNNER_TEMP/reference"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+      - run: mvn -B test -Dreference.dir="$RUNNER_TEMP/reference"
