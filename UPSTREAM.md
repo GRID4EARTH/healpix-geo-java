@@ -14,7 +14,7 @@ Agreement is checked, not assumed.
 
 1. `reference/make_reference.py` writes reference values with healpix-geo itself:
    random points, cell centres, cell corners exact and nudged by 1e-12, 1e-9 and 1e-6 degree,
-   poles, the polar-cap transition latitude and awkward longitudes, at every depth 0 to 29.
+   poles, the polar-cap transition latitude and awkward longitudes, at every level 0 to 29.
    The healpix-geo version that produced them is in
    `src/test/resources/reference/healpix-geo-version.txt`.
 2. The tests (`mvn test`) require identical cell ids, except points on a cell corner or within

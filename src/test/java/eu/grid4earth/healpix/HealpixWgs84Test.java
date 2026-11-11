@@ -38,9 +38,9 @@ class HealpixWgs84Test {
     List<String> failures = new ArrayList<>();
     for (String[] p : rows("cells.csv.gz")) {
       String kind = p[0];
-      int depth = Integer.parseInt(p[1]);
+      int level = Integer.parseInt(p[1]);
       long expected = Long.parseUnsignedLong(p[4]);
-      long got = HealpixWgs84.cell(depth, Double.parseDouble(p[2]), Double.parseDouble(p[3]));
+      long got = HealpixWgs84.cell(level, Double.parseDouble(p[2]), Double.parseDouble(p[3]));
       boolean corner = kind.equals("vertex") || kind.equals("near1e-12");
       if (corner) {
         cornerCount[0]++;
@@ -58,16 +58,16 @@ class HealpixWgs84Test {
   @Test
   void centresMatchHealpixGeoAndMapBackToTheirCell() throws IOException {
     for (String[] p : rows("centres.csv.gz")) {
-      int depth = Integer.parseInt(p[0]);
+      int level = Integer.parseInt(p[0]);
       long cell = Long.parseUnsignedLong(p[1]);
-      double[] got = HealpixWgs84.centre(depth, cell);
+      double[] got = HealpixWgs84.centre(level, cell);
       double dLon = Math.abs(got[0] - Double.parseDouble(p[2]));
       dLon = Math.min(dLon, 360.0 - dLon);
       double dLat = Math.abs(got[1] - Double.parseDouble(p[3]));
-      String where = "depth " + depth + " cell " + cell;
+      String where = "level " + level + " cell " + cell;
       assertTrue(dLon <= CENTRE_TOLERANCE_DEG && dLat <= CENTRE_TOLERANCE_DEG,
           where + ": centre differs by " + dLon + ", " + dLat + " degrees");
-      assertEquals(cell, HealpixWgs84.cell(depth, got[0], got[1]), where + ": centre not in its cell");
+      assertEquals(cell, HealpixWgs84.cell(level, got[0], got[1]), where + ": centre not in its cell");
     }
   }
 

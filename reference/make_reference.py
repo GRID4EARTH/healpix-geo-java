@@ -47,7 +47,7 @@ def cells_rows():
             jitter = rng.choice([-eps, eps], size=(2, vlon.size))
             add(f"near{eps:g}", d, vlon + jitter[0], vlat + jitter[1])
 
-    t = 41.937853910160136  # geodetic latitude of the polar-cap transition (OGC Annex B.8)
+    t = 41.937853910160136  # geodetic latitude of the polar-cap transition (asin(2/3) authalic)
     lats = [90.0, -90.0, 0.0, -0.0, t, -t, np.nextafter(t, 0), np.nextafter(t, 90), 89.999999999, -89.999999999]
     lons = [0.0, -0.0, 360.0, -360.0, 720.0, 45.0, 90.0, 135.0, 180.0, -180.0, 359.99999999999994, -1e-300, 1e-300]
     lo, la = np.meshgrid(lons, lats)

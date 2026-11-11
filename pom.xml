@@ -8,7 +8,7 @@
   <artifactId>healpix-geo-java</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <name>healpix-geo-java</name>
-  <description>HEALPix on the WGS84 ellipsoid (OGC HEALPix DGGRS, NESTED cell ids): a Java port of
+  <description>HEALPix on the WGS84 ellipsoid (CF conventions healpix grid mapping, NESTED cell ids): a Java port of
     healpix-geo's cell id and cell centre functions.</description>
   <url>https://github.com/GRID4EARTH/healpix-geo-java</url>
 

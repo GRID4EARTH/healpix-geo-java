@@ -1,9 +1,11 @@
 package eu.grid4earth.healpix;
 
 /**
- * HEALPix on the WGS84 ellipsoid, NESTED cell ids, as in OGC API - DGGS Annex B.8
- * (https://www.opengis.net/def/dggrs/OGC/1.0/HEALPix): geodetic latitude converted to
- * authalic latitude, then standard HEALPix.
+ * HEALPix on the WGS84 ellipsoid, NESTED cell ids, as described by the CF conventions
+ * (grid mapping {@code healpix}, {@code indexing_scheme = "nested"}): geodetic latitude converted
+ * to authalic latitude, then standard HEALPix. Resolution is the {@code level} (CF
+ * {@code refinement_level}), with 12 * 4^level cells; the healpix-geo {@code nested} functions
+ * and cdshealpix call the same number {@code depth}.
  *
  * <p>A port of two functions of healpix-geo (https://github.com/GRID4EARTH/healpix-geo,
  * Apache-2.0), kept in agreement with it by the tests and by a weekly CI job (see UPSTREAM.md):
@@ -61,17 +63,17 @@ public final class HealpixWgs84 {
 
   private HealpixWgs84() {}
 
-  /** NESTED cell id at {@code depth} (0..29) of a WGS84 point given in degrees. */
-  public static long cell(int depth, double lonDeg, double latDeg) {
-    if (depth < 0 || depth > 29) {
-      throw new IllegalArgumentException("depth must be between 0 and 29");
+  /** NESTED cell id at {@code level} (0..29) of a WGS84 point given in degrees. */
+  public static long cell(int level, double lonDeg, double latDeg) {
+    if (level < 0 || level > 29) {
+      throw new IllegalArgumentException("level must be between 0 and 29");
     }
     if (!(latDeg >= -90.0 && latDeg <= 90.0)) {
       throw new IllegalArgumentException("latitude must be in [-90, 90]");
     }
     double lon = Math.toRadians(remEuclid(lonDeg, 360.0));
     double lat = geographicToAuthalic(Math.toRadians(latDeg));
-    return hash(depth, lon, lat);
+    return hash(level, lon, lat);
   }
 
   // ---- authalic latitude (geodesy crate) ----
@@ -94,17 +96,17 @@ public final class HealpixWgs84 {
   }
 
   /**
-   * Centre of a NESTED cell at {@code depth}, as {longitude in [0, 360[, WGS84 geodetic latitude},
+   * Centre of a NESTED cell at {@code level}, as {longitude in [0, 360[, WGS84 geodetic latitude},
    * in degrees.
    */
-  public static double[] centre(int depth, long cell) {
-    if (depth < 0 || depth > 29) {
-      throw new IllegalArgumentException("depth must be between 0 and 29");
+  public static double[] centre(int level, long cell) {
+    if (level < 0 || level > 29) {
+      throw new IllegalArgumentException("level must be between 0 and 29");
     }
-    if (cell < 0 || cell >= 12L << (2 * depth)) {
-      throw new IllegalArgumentException("cell id out of range for this depth");
+    if (cell < 0 || cell >= 12L << (2 * level)) {
+      throw new IllegalArgumentException("cell id out of range for this level");
     }
-    double[] lonlat = centreRadians(depth, cell);
+    double[] lonlat = centreRadians(level, cell);
     return new double[] {
       remEuclid(Math.toDegrees(lonlat[0]), 360.0),
       Math.toDegrees(authalicToGeographic(lonlat[1]))
@@ -137,7 +139,7 @@ public final class HealpixWgs84 {
     return r < 0.0 ? r + Math.abs(m) : r;
   }
 
-  // ---- NESTED hash (cdshealpix Layer::hash) ----
+  // ---- NESTED hash (cdshealpix Layer::hash), where depth = level ----
 
   static long hash(int depth, double lon, double lat) {
     long nside = 1L << depth;
